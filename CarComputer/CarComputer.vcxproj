@@ -82,11 +82,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LCDModes.h" />
     <ClInclude Include="Tachometer.h" />
     <ClInclude Include="Termometer_DHT11.h" />
     <ClInclude Include="__vm\.CarComputer.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="LCDModes.cpp" />
     <ClCompile Include="Tachometer.cpp" />
     <ClCompile Include="Termometer_DHT11.cpp" />
   </ItemGroup>

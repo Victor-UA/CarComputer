@@ -9,10 +9,8 @@
 	#include "WProgram.h"
 #endif
 
-class TachometerClass
+class Tachometer
 {
- 
-
  protected:
 	 byte _hallSensorMagnets = 1;
 	 unsigned int _turnCounter = 0;
@@ -27,6 +25,6 @@ class TachometerClass
 	 unsigned long ElapsedTime(unsigned long lastTime);
 };
 
-extern TachometerClass Tachometer;
+extern Tachometer tachometer;
 
 #endif

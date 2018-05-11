@@ -24,6 +24,9 @@
     <ClCompile Include="Termometer_DHT11.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LCDModes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tachometer.h">
@@ -33,6 +36,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Termometer_DHT11.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LCDModes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
