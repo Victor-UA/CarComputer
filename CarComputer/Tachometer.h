@@ -11,16 +11,20 @@
 
 class TachometerClass
 {
- private:
-	 void HallSensorHandler();
-	 unsigned long ElapsedTime(unsigned long last_time);
+ 
 
  protected:
+	 byte _hallSensorMagnets = 1;
+	 unsigned int _turnCounter = 0;
+	 unsigned long _turnTimeCounter = 0;
+	 unsigned long _lastTurnTime = 0;
 
 
  public:
-	void init(byte hallSensor, byte hallSensorMagnets);
-	unsigned int getRPM();
+	 void HallSensorHandler();
+	 void init(byte hallSensorMagnets = 1);
+	 unsigned int getRPM();
+	 unsigned long ElapsedTime(unsigned long lastTime);
 };
 
 extern TachometerClass Tachometer;
