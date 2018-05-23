@@ -15,7 +15,7 @@ unsigned int Tachometer::getRPM()
 {
 	unsigned int turnSpeed = (float)_turnCounter / _turnTimeCounter / _hallSensorMagnets * 1000 * 60;
 	_turnCounter = 0;	
-	_turnTimeCounter = 0;	
+	_turnTimeCounter = 0;
 	return turnSpeed;
 }
 
@@ -34,3 +34,4 @@ unsigned long Tachometer::ElapsedTime(unsigned long lastTime) {
 
 
 Tachometer tachometer;
+

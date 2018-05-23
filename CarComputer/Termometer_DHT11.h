@@ -22,3 +22,4 @@ extern Termometer_DHT11Class Termometer_DHT11;
 
 #endif
 
+

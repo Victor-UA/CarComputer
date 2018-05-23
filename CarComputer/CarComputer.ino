@@ -22,7 +22,7 @@
 #define Hall_Sensor 2
 #pragma endregion
 #pragma region LCD
-LiquidCrystal_I2C lcd(0x3F, 16, 2);  // Óñòàíàâëèâàåì äèñïëåé
+LiquidCrystal_I2C lcd(0x3F, 16, 2);  // Ð£ÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÐ¼ Ð´Ð¸ÑÐ¿Ð»ÐµÐ¹
 #define LCD_Row_Length 16
 bool _lcd_BackLight = false;
 char fullFillRow[LCD_Row_Length];
@@ -39,7 +39,9 @@ Thread nokiaThread = Thread();
 #pragma endregion
 #pragma region Tachometer
 Thread tachometerThread = Thread();
-#define TachometerRefreshInterval 100
+#define TachometerRefreshIntervalMax 600 //ms
+#define TachometerRefreshIntervalMin 100 //ms
+unsigned int TachometerRefreshInterval = TachometerRefreshIntervalMax; //ms
 unsigned int tachometerCurrentSpeed = 0;
 #pragma endregion
 
@@ -47,10 +49,12 @@ unsigned int tachometerCurrentSpeed = 0;
 void setup() 
 {	
 	Serial.begin(9600);
+	Serial.println("Setup start");
 	#pragma region Hall Sensor
 		pinMode(Hall_Sensor, INPUT);
 		attachInterrupt(digitalPinToInterrupt(Hall_Sensor), HallSensorHandler, RISING);
 	#pragma endregion
+		Serial.println("Hall");
 	#pragma region LCD
 		lcd.init();
 		LCD_BackLight(true);	
@@ -59,32 +63,43 @@ void setup()
 			fullFillRow[i] = ' ';
 		}
 		lcdThread.onRun(LCD_Handler);
-		lcdThread.setInterval(LCDRefreshInterval);
+		lcdThread.setInterval(LCDRefreshInterval);		
 	#pragma endregion
+		Serial.println("LCD");
 	#pragma region Nokia Display
 		nokiaDisplay.begin();	
 		nokiaDisplay.clearDisplay();
 		nokiaDisplay.display();
-		nokiaDisplay.setContrast(50); // óñòàíîâêà êîíòðàñòà
-		nokiaDisplay.setTextSize(1);  // óñòàíîâêà ðàçìåðà øðèôòà
-		nokiaDisplay.setTextColor(BLACK); // óñòàíîâêà öâåòà òåêñòà
-		nokiaDisplay.setCursor(0, 0); // óñòàíîâêà ïîçèöèè êóðñîðà	
+		nokiaDisplay.setContrast(50); // ÑƒÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° ÐºÐ¾Ð½Ñ‚Ñ€Ð°ÑÑ‚Ð°
+		nokiaDisplay.setTextSize(1);  // ÑƒÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ñ€Ð°Ð·Ð¼ÐµÑ€Ð° ÑˆÑ€Ð¸Ñ„Ñ‚Ð°
+		nokiaDisplay.setTextColor(BLACK); // ÑƒÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ñ†Ð²ÐµÑ‚Ð° Ñ‚ÐµÐºÑÑ‚Ð°
+		nokiaDisplay.setCursor(0, 0); // ÑƒÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ð¿Ð¾Ð·Ð¸Ñ†Ð¸Ð¸ ÐºÑƒÑ€ÑÐ¾Ñ€Ð°	
 		nokiaThread.onRun(Nokia_Handler);
 		nokiaThread.setInterval(NokiaRefreshInterval);
 	#pragma endregion
+		Serial.println("Nokia");
 	#pragma region Tachometer
 		tachometerThread.onRun(TachometerHandler);
 		tachometerThread.setInterval(TachometerRefreshInterval);
 	#pragma endregion
+		Serial.println("Tachometer");
 }
 
  //the loop function runs over and over again until power down or reset
 void loop() 
-{
+{	
 	if (tachometerThread.shouldRun())
 	{
 		tachometerThread.run();
 	}		
+	if (nokiaThread.shouldRun())
+	{
+		nokiaThread.run();
+	}
+	if (lcdThread.shouldRun())
+	{
+		lcdThread.run();
+	}
 }
 
 
@@ -101,7 +116,7 @@ void LCD_Handler()
 			break;
 		default:
 			break;
-	}
+	}	
 }
 void LCD_Mode_Tachometer()
 {
@@ -159,13 +174,24 @@ void Nokia_Handler()
 
 #pragma region Tachometer
 void HallSensorHandler() {
-	tachometer.HallSensorHandler();
+	tachometer.HallSensorHandler();	
 }
 void TachometerHandler() 
 {
 	tachometerCurrentSpeed = tachometer.getRPM();	
+	if (tachometerCurrentSpeed >= 1000 && TachometerRefreshInterval > TachometerRefreshIntervalMin)
+	{
+		TachometerRefreshInterval = TachometerRefreshIntervalMin;
+		tachometerThread.setInterval(TachometerRefreshInterval);
+	}
+	if (tachometerCurrentSpeed < 1000 && TachometerRefreshInterval < TachometerRefreshIntervalMax)
+	{
+		TachometerRefreshInterval = TachometerRefreshIntervalMax;
+		tachometerThread.setInterval(TachometerRefreshInterval);
+	}
 }
 #pragma endregion
+
 
 
 
