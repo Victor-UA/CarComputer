@@ -4,6 +4,31 @@
  Author:	Victor-UA, Victor_UA@Ukr.net
 */
 
+/*
+The circuit :
+
+LCD I2C
+	GND:	GND
+	VCC:	5V
+	SOA:	A5
+	SCL:	A4
+
+Hall sensor
+	GND:	GND
+	+5V:	5V
+	S:		D2
+
+Nokia monitor
+	GND:	GND
+	Light:	GND
+	VCC:	5V
+	CLK:	D3
+	DIN:	D4
+	DC:		D5
+	CE:		D6
+	RST:	D7
+*/
+
 #include "LCDModes.h"
 #include <ThreadController.h>
 #include <Thread.h>
